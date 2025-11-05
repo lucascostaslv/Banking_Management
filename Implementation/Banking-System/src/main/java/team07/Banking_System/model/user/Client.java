@@ -2,13 +2,16 @@ package team07.Banking_System.model.user;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import team07.Banking_System.model.account.Account.States;
+import java.util.Random;
 
 @Entity
 public class Client extends User{
     private int act;
+    private States state; 
 
-    public Client(String name, String cpf, LocalDate birth_day, int type, int act){
-        super(name, cpf, birth_day, 2);
+    public Client(String first_name, String last_name, String cpf, LocalDate birth_day, int type, int act){
+        super(first_name, last_name, cpf, birth_day, 2);
         this.act = act;
     }
 
@@ -16,7 +19,13 @@ public class Client extends User{
 
     @Override
     protected String GenerateId(){
+        String month = String.format("%02d" ,LocalDate.now().getMonthValue());
 
+        Random rand = new Random();
+        int r_int = rand.nextInt(1000);
+        String r_num = String.format("%03d", r_int);
+
+        return "CLI-" + month + r_num;
     }
 
     public void setAct(int act){
@@ -25,5 +34,13 @@ public class Client extends User{
 
     public int getAct() {
         return act;
+    }
+
+    public States getState() {
+        return state;
+    }
+
+    public void setState(States state) {
+        this.state = state;
     }
 }

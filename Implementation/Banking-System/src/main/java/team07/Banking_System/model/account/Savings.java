@@ -18,16 +18,6 @@ public class Savings extends Account{
 
     public Savings(){};
 
-    @Override
-    protected String GenerateId(){
-
-    }
-
-    @Override
-    protected int GenerateNAcc(){
-
-    }
-
     public LocalDateTime getReturn_date() {
         return return_date;
     }

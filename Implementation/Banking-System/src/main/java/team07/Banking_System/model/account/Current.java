@@ -14,16 +14,6 @@ public class Current extends Account{
 
     public Current(){}
 
-    @Override
-    protected String GenerateId(){
-
-    }
-
-    @Override
-    protected int GenerateNAcc(){
-
-    }
-
     public BigDecimal getMonthly_tax() {
         return monthly_tax;
     }
