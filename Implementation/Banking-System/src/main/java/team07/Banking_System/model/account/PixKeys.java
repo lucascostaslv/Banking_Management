@@ -3,7 +3,7 @@ package team07.Banking_System.model.account;
 import jakarta.persistence.*;
 
 @Entity
-public class PixKeys {
+public class PixKeys{
     @Id
     private String id;
 
@@ -15,6 +15,10 @@ public class PixKeys {
     public enum KeyType {
         EMAIL, PHONE, RANDOM
     }
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private Account account;
 
     public PixKeys(Account account, String key, KeyType type) {
         this.id = account.getId();

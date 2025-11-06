@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
-import team07.Banking_System.model.user.Client;;
+import team07.Banking_System.model.user.Client;
 
 
 public abstract class Account {
@@ -20,6 +22,9 @@ public abstract class Account {
     
     @Column(columnDefinition = "TIMESTAMP(3)")
     private LocalDateTime open_date;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<PixKeys> keys = new ArrayList<>();
 
     public Account(Client c, String type){
         this.id = GenerateId();
