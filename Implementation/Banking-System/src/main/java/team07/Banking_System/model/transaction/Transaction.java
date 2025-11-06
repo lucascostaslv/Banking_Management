@@ -3,6 +3,7 @@ package team07.Banking_System.model.transaction;
 import jakarta.persistence.*;
 import team07.Banking_System.model.account.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
 
 @Entity
@@ -17,11 +18,22 @@ public abstract class Transaction {
     private BigDecimal value;
 
     public Transaction(Account acc_trg, BigDecimal value){
+        this.id = generateId();
         this.acc_trg = acc_trg;
         this.value = value;
     }
 
     public Transaction(){}
+
+    protected String generateId(){
+    LocalDateTime now = LocalDateTime.now();
+
+    String pattern = "ddyyyyMMHHmmssSSS"; 
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+    
+    return now.format(formatter);
+}
 
     public String getId() {
         return id;
