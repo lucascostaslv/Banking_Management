@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 public class Savings extends Account{
     private LocalDateTime return_date;
 
-    @Column(columnDefinition = "TIMESTAMP(3)")
-    private BigDecimal return_value;
+    @Column(name = "return_amount")
+    private BigDecimal return_amount;
 
     public Savings(Client c, String type){
         super(c, type);
@@ -26,11 +26,11 @@ public class Savings extends Account{
         this.return_date = return_date;
     }
 
-    public BigDecimal getReturn_value() {
-        return return_value;
+    public BigDecimal getReturn_amount() {
+        return return_amount;
     }
 
-    public void setReturn_value(BigDecimal return_value) {
-        this.return_value = return_value;
+    public void setReturn_amount(BigDecimal return_amount) {
+        this.return_amount = return_amount;
     }
 }  

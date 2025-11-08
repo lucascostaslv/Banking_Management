@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import team07.Banking_System.model.user.Client;
 
 @Entity
@@ -18,6 +20,7 @@ public abstract class Account {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonBackReference
     private Client client;
     private int accountNumber;
     private BigDecimal balance = BigDecimal.ZERO;
@@ -27,6 +30,7 @@ public abstract class Account {
     private LocalDateTime openDate;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PixKeys> keys = new ArrayList<>();
 
     public Account(Client c, String type){
@@ -34,10 +38,10 @@ public abstract class Account {
             throw new IllegalArgumentException("Client cannot be null when creating an account.");
         }
         this.client = c;
-        this.id = generateId(c);
-        this.accountNumber = generateNAcc(c);
         this.type = type;
         this.openDate = LocalDateTime.now();
+        generateAndSetId();
+        generateAndSetAccountNumber();
     }
 
     public Account(){}
@@ -55,7 +59,11 @@ public abstract class Account {
         return "ACC-" + code + year + r_num;
     }
 
-    protected int generateNAcc(Client client){
+    public void generateAndSetId() {
+        this.id = generateId(this.client);
+    }
+
+    private int generateNAcc(Client client){
         String code = client.getState().getCode();
 
         Random rand = new Random();
@@ -64,6 +72,10 @@ public abstract class Account {
         String s_aux = r_num + code;
 
         return Integer.parseInt(s_aux);
+    }
+
+    public void generateAndSetAccountNumber() {
+        this.accountNumber = generateNAcc(this.client);
     }
 
     // Getters and Setters with conventional Java naming

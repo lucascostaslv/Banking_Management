@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/acc_current")
@@ -25,6 +26,12 @@ public class CurrentController {
         return currentService.findAccount(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Current>> listAll() {
+        List<Current> list = currentService.listAll();
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping

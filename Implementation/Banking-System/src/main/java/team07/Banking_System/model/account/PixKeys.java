@@ -1,6 +1,7 @@
 package team07.Banking_System.model.account;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @IdClass(PixKeyId.class)
@@ -24,6 +25,7 @@ public class PixKeys{
     @ManyToOne
     @MapsId("accountId")
     @JoinColumn(name = "account_id")
+    @JsonBackReference
     private Account account;
 
     public PixKeys(Account account, String key, KeyType type) {

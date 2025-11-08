@@ -35,6 +35,8 @@ public class ManagerService {
             throw new IllegalArgumentException("O primeiro nome do Cliente é obrigatório.");
         }
 
+        manager.setId(manager.generateId());
+
         return managerRepository.save(manager);
     }
 

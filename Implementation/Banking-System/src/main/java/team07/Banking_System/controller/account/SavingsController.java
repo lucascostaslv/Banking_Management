@@ -8,6 +8,7 @@ import team07.Banking_System.model.account.Savings;
 import team07.Banking_System.services.account.SavingsService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/savings") // rota base para endpoints de conta poupança
@@ -27,6 +28,12 @@ public class SavingsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping
+    public ResponseEntity<List<Savings>> listAll() {
+        List<Savings> list = savingsService.listAll();
+        return ResponseEntity.ok(list);
+    }
+
     @PostMapping
     public ResponseEntity<Savings> createSavings(@RequestBody Savings savings) {
         Savings createdAccount = savingsService.createSavings(savings);
@@ -44,7 +51,7 @@ public class SavingsController {
     ) {
 
         savings.setId(id);
-        Savings updated = savingsService.updateCurrent(savings);
+        Savings updated = savingsService.updateSavings(savings);
         return ResponseEntity.ok(updated);
     }
 }
