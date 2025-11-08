@@ -37,7 +37,7 @@ public class TicketService {
         Optional<Ticket> ticketOptional = ticketRepository.findById(id);
 
         if (ticketOptional.isEmpty()) {
-            throw new NoSuchElementException("Ticket with ID " + id + " not found.");
+            throw new NoSuchElementException("Ticket com ID " + id + " não encontrado para exclusão.");
         }
         
         Ticket ticket = ticketOptional.get();
