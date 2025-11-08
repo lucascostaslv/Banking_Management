@@ -1,0 +1,341 @@
+### Arquivo de Requisições para o Banking System
+#
+# Instruções:
+# 1. Inicie a aplicação Spring Boot.
+# 2. Use a extensão "REST Client" no VS Code ou o cliente HTTP do IntelliJ.
+# 3. Execute as requisições em ordem, uma por uma.
+# 4. As variáveis ({{...}}) armazenarão os IDs automaticamente.
+#
+@baseUrl = http://localhost:8080
+
+###
+### FASE 1 - CRIAR USUÁRIOS
+###
+
+# 1.1 - Criar Cliente 1
+# @name createClient1
+POST {{baseUrl}}/usr_client
+Content-Type: application/json
+
+{
+    "cpf": "11122233344",
+    "first_name": "Ana",
+    "last_name": "Silva",
+    "birth_day": "1990-05-15",
+    "state": "SP"
+}
+
+###
+# 1.2 - Criar Cliente 2
+# @name createClient2
+POST {{baseUrl}}/usr_client
+Content-Type: application/json
+
+{
+    "cpf": "55566677788",
+    "first_name": "Bruno",
+    "last_name": "Costa",
+    "birth_day": "1985-10-20",
+    "state": "RJ"
+}
+
+###
+# 2.1 - Criar Manager 1
+# @name createManager1
+POST {{baseUrl}}/usr_manager
+Content-Type: application/json
+
+{
+    "cpf": "12312312312",
+    "first_name": "Gerente",
+    "last_name": "Um",
+    "birth_day": "1980-01-01"
+}
+
+###
+# 2.2 - Criar Manager 2
+# @name createManager2
+POST {{baseUrl}}/usr_manager
+Content-Type: application/json
+
+{
+    "cpf": "45645645645",
+    "first_name": "Gerente",
+    "last_name": "Dois",
+    "birth_day": "1982-02-02"
+}
+
+
+###
+### FASE 2 - CONSULTAR USUÁRIOS
+###
+
+# 5 - Listar todos os clientes
+# @name listAllClients
+GET {{baseUrl}}/usr_client
+
+###
+# 6 - Consultar cliente 1 por ID
+# @name getClient1
+GET {{baseUrl}}/usr_client/{{createClient1.response.body.id}}
+
+###
+# 7 - Listar todos os managers
+# @name listAllManagers
+GET {{baseUrl}}/usr_manager
+
+###
+# 8 - Consultar manager 1 por ID
+# @name getManager1
+GET {{baseUrl}}/usr_manager/{{createManager1.response.body.id}}
+
+
+###
+### FASE 3 - CRIAR CONTAS
+###
+
+# 9.1 - Criar Conta Corrente para Cliente 1
+# @name createCurrentAccount1
+POST {{baseUrl}}/acc_current
+Content-Type: application/json
+
+{
+    "client": { "id": "{{createClient1.response.body.id}}" }
+}
+
+###
+# 9.2 - Criar Conta Corrente para Cliente 2
+# @name createCurrentAccount2
+POST {{baseUrl}}/acc_current
+Content-Type: application/json
+
+{
+    "client": { "id": "{{createClient2.response.body.id}}" }
+}
+
+###
+# 11.1 - Criar Conta Poupança para Cliente 1
+# @name createSavingsAccount1
+POST {{baseUrl}}/savings
+Content-Type: application/json
+
+{
+    "client": { "id": "{{createClient1.response.body.id}}" }
+}
+
+###
+# 11.2 - Criar Conta Poupança para Cliente 2
+# @name createSavingsAccount2
+POST {{baseUrl}}/savings
+Content-Type: application/json
+
+{
+    "client": { "id": "{{createClient2.response.body.id}}" }
+}
+
+
+###
+### FASE 4 - CONSULTAR CONTAS
+###
+
+# 13 - Consultar conta corrente 1
+# @name getCurrentAccount1
+GET {{baseUrl}}/acc_current/{{createCurrentAccount1.response.body.id}}
+
+###
+# 14 - Consultar conta poupança 2
+# @name getSavingsAccount2
+GET {{baseUrl}}/savings/{{createSavingsAccount2.response.body.id}}
+
+
+###
+### FASE 5 - CRIAR TRANSAÇÕES
+###
+
+# Antes de rodar as transações, vamos adicionar saldo às contas
+# @name depositIntoCurrentAccount1
+PUT {{baseUrl}}/acc_current/{{createCurrentAccount1.response.body.id}}
+Content-Type: application/json
+
+{
+    "id": "{{createCurrentAccount1.response.body.id}}",
+    "type": "current",
+    "client": { "id": "{{createClient1.response.body.id}}" },
+    "accountNumber": {{createCurrentAccount1.response.body.accountNumber}},
+    "balance": 1000.00
+}
+
+###
+# @name depositIntoCurrentAccount2
+PUT {{baseUrl}}/acc_current/{{createCurrentAccount2.response.body.id}}
+Content-Type: application/json
+
+{
+    "id": "{{createCurrentAccount2.response.body.id}}",
+    "type": "current",
+    "client": { "id": "{{createClient2.response.body.id}}" },
+    "accountNumber": {{createCurrentAccount2.response.body.accountNumber}},
+    "balance": 800.00
+}
+
+###
+# @name depositIntoSavingsAccount2
+PUT {{baseUrl}}/savings/{{createSavingsAccount2.response.body.id}}
+Content-Type: application/json
+
+{
+    "id": "{{createSavingsAccount2.response.body.id}}",
+    "type": "savings",
+    "client": { "id": "{{createClient2.response.body.id}}" },
+    "accountNumber": {{createSavingsAccount2.response.body.accountNumber}},
+    "balance": 500.00
+}
+
+###
+# 15.1 - Criar PIX da Conta Corrente 1 para Poupança 2
+# @name createPix1
+POST {{baseUrl}}/pix
+Content-Type: application/json
+
+{
+    "originAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
+    "targetAccount": { "id": "{{createSavingsAccount2.response.body.id}}" },
+    "value": 150.75,
+    "pixKey": "55566677788"
+}
+
+###
+# 15.2 - Criar PIX da Conta Corrente 2 para Corrente 1
+# @name createPix2
+POST {{baseUrl}}/pix
+Content-Type: application/json
+
+{
+    "originAccount": { "id": "{{createCurrentAccount2.response.body.id}}" },
+    "targetAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
+    "value": 50.00,
+    "pixKey": "11122233344"
+}
+
+###
+# 16.1 - Criar Boleto PENDENTE para conta corrente 1
+# @name createTicket1
+POST {{baseUrl}}/ticket
+Content-Type: application/json
+
+{
+    "originAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
+    "value": 250.00,
+    "dueDate": "2024-12-31"
+}
+
+###
+# 16.2 - Criar Boleto PENDENTE para conta corrente 2
+# @name createTicket2
+POST {{baseUrl}}/ticket
+Content-Type: application/json
+
+{
+    "originAccount": { "id": "{{createCurrentAccount2.response.body.id}}" },
+    "value": 100.00,
+    "dueDate": "2024-11-30"
+}
+
+###
+# 17 - PAGAR um boleto (Boleto 2 será pago pela conta corrente 1)
+# @name payTicket2
+POST {{baseUrl}}/ticket/{{createTicket2.response.body.id}}/pay
+Content-Type: application/json
+
+{
+    "payingAccountId": "{{createCurrentAccount1.response.body.id}}"
+}
+
+
+###
+### FASE 6 - CONSULTAR TRANSAÇÕES
+###
+
+# 18 - Consultar PIX 1 por ID
+# @name getPix1
+GET {{baseUrl}}/pix/{{createPix1.response.body.id}}
+
+###
+# 19 - Listar Boletos da conta corrente 1 (usando endpoint existente)
+# @name listTicketsFromAccount1
+GET {{baseUrl}}/ticket/list/by-account/{{createCurrentAccount1.response.body.id}}
+
+###
+# 20 - Consultar Boleto 1 (pendente) por ID
+# @name getTicket1
+GET {{baseUrl}}/ticket/{{createTicket1.response.body.id}}
+
+###
+# 21 - Consultar Boleto 2 (pago) por ID
+# @name getPaidTicket2
+GET {{baseUrl}}/ticket/{{createTicket2.response.body.id}}
+
+
+###
+### FASE 7 - TESTAR ATUALIZAÇÕES
+###
+
+# 22 - Atualizar cliente 1 (não pode mudar CPF)
+# @name updateClient1
+PUT {{baseUrl}}/usr_client/{{createClient1.response.body.id}}
+Content-Type: application/json
+
+{
+    "cpf": "11122233344",
+    "first_name": "Ana",
+    "last_name": "Silva Santos",
+    "birth_day": "1990-05-15",
+    "state": "SP"
+}
+
+###
+# 23 - Atualizar conta corrente 1 (ex: alterar saldo)
+# @name updateCurrentAccount1
+PUT {{baseUrl}}/acc_current/{{createCurrentAccount1.response.body.id}}
+Content-Type: application/json
+# O tipo é necessário para a desserialização correta no backend
+
+{
+    "id": "{{createCurrentAccount1.response.body.id}}",
+    "client": { "id": "{{createClient1.response.body.id}}" },
+    "accountNumber": {{createCurrentAccount1.response.body.accountNumber}},
+    "balance": 1234.56
+}
+
+###
+# 24 - Atualizar conta poupança 2 (ex: alterar saldo)
+# @name updateSavingsAccount2
+PUT {{baseUrl}}/savings/{{createSavingsAccount2.response.body.id}}
+Content-Type: application/json
+# O tipo é necessário para a desserialização correta no backend
+
+{
+    "id": "{{createSavingsAccount2.response.body.id}}",
+    "client": { "id": "{{createClient2.response.body.id}}" },
+    "accountNumber": {{createSavingsAccount2.response.body.accountNumber}},
+    "balance": 987.65
+}
+
+
+###
+### FASE 8 - TESTAR EXCLUSÕES
+###
+
+# 25 - Deletar boleto PENDENTE (Boleto 1)
+# @name deletePendingTicket1
+DELETE {{baseUrl}}/ticket/{{createTicket1.response.body.id}}
+
+###
+# 26 - TENTAR deletar boleto PAGO (Boleto 2) - DEVE FALHAR com erro 400 ou 409
+# @name tryDeletePaidTicket2
+DELETE {{baseUrl}}/ticket/{{createTicket2.response.body.id}}
+
+###
+# 27 - Deletar manager 2
+# @name deleteManager2
+DELETE {{baseUrl}}/usr_manager/{{createManager2.response.body.id}}

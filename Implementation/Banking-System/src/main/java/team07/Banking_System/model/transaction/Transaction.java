@@ -2,6 +2,7 @@ package team07.Banking_System.model.transaction;
 
 import jakarta.persistence.*;
 import team07.Banking_System.model.account.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
@@ -13,9 +14,11 @@ public abstract class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "origin_account_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "client", "keys"})
     private Account originAccount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_account_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "client", "keys"})
     private Account targetAccount;
     private String type;
     private LocalDateTime payment_date;
@@ -40,6 +43,10 @@ public abstract class Transaction {
     
     return now.format(formatter);
 }
+
+    public void generateAndSetId() {
+        this.id = generateId();
+    }
 
     public String getId() {
         return id;
