@@ -16,7 +16,7 @@ public class Manager extends User{
     public Manager(){}
 
     @Override
-    protected String GenerateId() {
+    public String generateId() {
         String name = getFirst_name();
         String l_name = getLast_name();
 

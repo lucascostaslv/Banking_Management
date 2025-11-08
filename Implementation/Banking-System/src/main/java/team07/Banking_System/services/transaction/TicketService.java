@@ -18,9 +18,8 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
     }
 
-    public List<Ticket> listAll(Ticket acc_org){
-        String account = acc_org.getId();
-        return ticketRepository.findByAcc_orgId(account);
+    public List<Ticket> listAllByAccountId(String accountId){
+        return ticketRepository.findByOriginAccountId(accountId);
     }
 
     public Optional<Ticket> findTicket(String id){
@@ -42,7 +41,7 @@ public class TicketService {
         
         Ticket ticket = ticketOptional.get();
 
-        if (ticket.getAcc_trg() != null) {
+        if (ticket.getTargetAccount() != null) {
             throw new IllegalArgumentException("Não é possível deletar o Ticket: A conta de destino (Acc_trg) já está definida.");
         }
 
@@ -50,4 +49,3 @@ public class TicketService {
         ticketRepository.deleteById(id);
     }
 }
-

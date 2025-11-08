@@ -20,21 +20,11 @@ public class CurrentService {
         return currentRepository.findById(id);
     }
 
-
-    public void uniqueIdGen(Current current){
-        String generatedId;
-
-        do{
-            generatedId = current.getId();
-
-        } while(currentRepository.existsById(generatedId));
-
-        current.setId(generatedId);
-    }
-
     @Transactional
     public Current createCurrent(Current current){
-        uniqueIdGen(current);
+        if (current.getClient() == null || current.getClient().getId() == null) {
+            throw new IllegalArgumentException("Client information is required to create an account.");
+        }
 
         return currentRepository.save(current);
     }

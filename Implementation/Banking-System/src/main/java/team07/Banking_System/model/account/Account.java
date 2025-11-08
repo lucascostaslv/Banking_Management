@@ -10,102 +10,104 @@ import java.util.List;
 
 import team07.Banking_System.model.user.Client;
 
-
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account {
     @Id
     private String id;
 
-    private Client c;
-    private int n_acc;
-    private BigDecimal balance;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+    private int accountNumber;
+    private BigDecimal balance = BigDecimal.ZERO;
     private String type;
     
     @Column(columnDefinition = "TIMESTAMP(3)")
-    private LocalDateTime open_date;
+    private LocalDateTime openDate;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PixKeys> keys = new ArrayList<>();
 
     public Account(Client c, String type){
-        this.id = GenerateId();
-        this.n_acc = GenerateNAcc();
-        this.c = c;
+        if (c == null) {
+            throw new IllegalArgumentException("Client cannot be null when creating an account.");
+        }
+        this.client = c;
+        this.id = generateId(c);
+        this.accountNumber = generateNAcc(c);
         this.type = type;
+        this.openDate = LocalDateTime.now();
     }
 
     public Account(){}
 
-    protected String GenerateId(){
+    protected String generateId(Client client){
         int year = LocalDate.now().getYear();
         year = year%100;
 
-        Client aux = this.getC();
-        String code = aux.getState().getCode();
+        String code = client.getState().getCode();
 
         Random rand = new Random();
         int r_aux = rand.nextInt(10000);
         String r_num = String.format("%04d", r_aux);
 
-        return "C-" + code + year + r_num;
+        return "ACC-" + code + year + r_num;
     }
 
-    protected int GenerateNAcc(){
-        Client aux = this.getC();
-        String code = aux.getState().getCode();
+    protected int generateNAcc(Client client){
+        String code = client.getState().getCode();
 
         Random rand = new Random();
-        int r_aux = rand.nextInt(10000);
-        String r_num = String.format("%04d", r_aux);
+        String r_num = String.format("%04d", rand.nextInt(10000));
 
         String s_aux = r_num + code;
 
         return Integer.parseInt(s_aux);
     }
 
+    // Getters and Setters with conventional Java naming
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
 
-    public Client getC() {
-        return c;
+    public Client getClient() {
+        return client;
     }
 
-    public void setC(Client c) {
-        this.c = c;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public int getN_acc() {
-        return n_acc;
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setN_acc(int n_acc) {
-        this.n_acc = n_acc;
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public BigDecimal getBalance() {
         return balance;
     }
-
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
-    public LocalDateTime getOpen_date() {
-        return open_date;
+    public LocalDateTime getOpenDate() {
+        return openDate;
     }
 
-    public void setOpen_date(LocalDateTime open_date) {
-        this.open_date = open_date;
+    public void setOpenDate(LocalDateTime openDate) {
+        this.openDate = openDate;
     }
 
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }

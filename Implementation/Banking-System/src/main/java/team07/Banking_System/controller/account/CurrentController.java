@@ -6,9 +6,9 @@ import team07.Banking_System.services.account.CurrentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.List;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/acc_current")
@@ -22,15 +22,19 @@ public class CurrentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Current> getCurrentById(@PathVariable String id) {
-        Optional<Current> currentOpt = currentService.findAccount(id);
-
-        return currentOpt.map(ResponseEntity::ok) .orElseGet(() -> ResponseEntity.notFound().build());
+        return currentService.findAccount(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Current> createCurrent(@RequestBody Current current) {
-        Current created = currentService.createCurrent(current);
-        return ResponseEntity.ok(created);
+        Current createdAccount = currentService.createCurrent(current);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdAccount.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdAccount);
     }
 
 

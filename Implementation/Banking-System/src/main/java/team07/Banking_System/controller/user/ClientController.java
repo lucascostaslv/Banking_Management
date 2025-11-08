@@ -3,9 +3,11 @@ package team07.Banking_System.controller.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import team07.Banking_System.model.user.Client;
 import team07.Banking_System.services.user.ClientService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -36,8 +38,12 @@ private final ClientService clientService;
     // CRIAR CLIENTE
     @PostMapping
     public ResponseEntity<Client> create(@RequestBody Client client) {
-        Client created = clientService.createClient(client);
-        return ResponseEntity.ok(created);
+        Client createdClient = clientService.createClient(client);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdClient.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdClient);
     }
 
     // ATUALIZAR CLIENTE

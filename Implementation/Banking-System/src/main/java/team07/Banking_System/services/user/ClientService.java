@@ -34,6 +34,8 @@ public class ClientService {
         if (client.getFirst_name() == null || client.getFirst_name().isEmpty()) {
             throw new IllegalArgumentException("O primeiro nome do Cliente é obrigatório.");
         }
+
+        client.setId(client.generateId());
         
         return clientRepository.save(client);
     }

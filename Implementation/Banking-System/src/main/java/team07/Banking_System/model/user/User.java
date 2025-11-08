@@ -2,8 +2,7 @@ package team07.Banking_System.model.user;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-
-@Entity
+@MappedSuperclass
 public abstract class User{
     @Id
     private String id;
@@ -15,7 +14,6 @@ public abstract class User{
     private int type;
 
     public User(String first_name, String last_name, String cpf, LocalDate birth_day, int type){
-        this.id = GenerateId();
         this.first_name = first_name;
         this.last_name = last_name;
         this.cpf = cpf;
@@ -25,7 +23,7 @@ public abstract class User{
 
     public User(){}
 
-    protected abstract String GenerateId();
+    public abstract String generateId();
 
     public String getId() {
         return id;

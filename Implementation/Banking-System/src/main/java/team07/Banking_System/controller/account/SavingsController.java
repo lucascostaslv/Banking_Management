@@ -3,10 +3,11 @@ package team07.Banking_System.controller.account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import team07.Banking_System.model.account.Savings;
 import team07.Banking_System.services.account.SavingsService;
 
-import java.util.Optional;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/savings") // rota base para endpoints de conta poupança
@@ -21,15 +22,19 @@ public class SavingsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Savings> getSavingsById(@PathVariable String id) {
-        Optional<Savings> savingsOpt = savingsService.findAccount(id);
-
-        return savingsOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return savingsService.findAccount(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Savings> createSavings(@RequestBody Savings savings) {
-        Savings created = savingsService.createSavings(savings);
-        return ResponseEntity.ok(created);
+        Savings createdAccount = savingsService.createSavings(savings);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdAccount.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdAccount);
     }
 
     @PutMapping("/{id}")

@@ -6,20 +6,26 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
 
-@Entity
+@MappedSuperclass
 public abstract class Transaction {
     @Id
     private String id;
 
-    private Account acc_org;
-    private Account acc_trg;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_account_id")
+    private Account originAccount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_account_id")
+    private Account targetAccount;
     private String type;
     private LocalDateTime payment_date;
+
+    @Column(name = "transaction_value")
     private BigDecimal value;
 
     public Transaction(Account acc_trg, BigDecimal value){
         this.id = generateId();
-        this.acc_trg = acc_trg;
+        this.targetAccount = acc_trg;
         this.value = value;
     }
 
@@ -43,20 +49,20 @@ public abstract class Transaction {
         this.id = id;
     }
 
-    public Account getAcc_org() {
-        return acc_org;
+    public Account getOriginAccount() {
+        return originAccount;
     }
 
-    public void setAcc_org(Account acc_org) {
-        this.acc_org = acc_org;
+    public void setOriginAccount(Account originAccount) {
+        this.originAccount = originAccount;
     }
 
-    public Account getAcc_trg() {
-        return acc_trg;
+    public Account getTargetAccount() {
+        return targetAccount;
     }
 
-    public void setAcc_trg(Account acc_trg) {
-        this.acc_trg = acc_trg;
+    public void setTargetAccount(Account targetAccount) {
+        this.targetAccount = targetAccount;
     }
 
     public String getType() {

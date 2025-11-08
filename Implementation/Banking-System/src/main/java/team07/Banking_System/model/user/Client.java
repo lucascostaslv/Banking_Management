@@ -18,7 +18,7 @@ public class Client extends User{
     public Client(){}
 
     @Override
-    protected String GenerateId(){
+    public String generateId(){
         String month = String.format("%02d" ,LocalDate.now().getMonthValue());
 
         Random rand = new Random();

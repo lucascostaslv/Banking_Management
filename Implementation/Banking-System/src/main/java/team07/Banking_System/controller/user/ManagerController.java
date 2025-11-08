@@ -3,10 +3,12 @@ package team07.Banking_System.controller.user;
 import team07.Banking_System.model.user.Manager;
 import team07.Banking_System.services.user.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/usr_manager")
@@ -19,28 +21,32 @@ public class ManagerController {
         this.managerService = managerService;
     }
 
-    // GET -> /usr_manager/{id}
     @GetMapping("/{id}")
-    public Manager findById(@PathVariable String id) {
+    public ResponseEntity<Manager> findById(@PathVariable String id) {
         return managerService.findManager(id)
-                .orElseThrow(() -> new NoSuchElementException("Manager não encontrado: " + id));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // GET -> /usr_manager
     @GetMapping
-    public List<Manager> listAll() {
-        return managerService.listAll();
+    public ResponseEntity<List<Manager>> listAll() {
+        List<Manager> managers = managerService.listAll();
+        return ResponseEntity.ok(managers);
     }
 
-    // POST -> /usr_manager
     @PostMapping
-    public Manager create(@RequestBody Manager manager) {
-        return managerService.createManager(manager);
+    public ResponseEntity<Manager> create(@RequestBody Manager manager) {
+        Manager createdManager = managerService.createManager(manager);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdManager.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdManager);
     }
 
-    // DELETE -> /usr_manager/{id}
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         managerService.deleteManager(id);
+        return ResponseEntity.noContent().build();
     }
 }

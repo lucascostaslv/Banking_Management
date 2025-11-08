@@ -17,9 +17,8 @@ public class PixService {
         this.pixRepository = pixRepository;
     }
 
-    public List<Pix> listAll(Pix acc_org){
-        String account = acc_org.getId();
-        return pixRepository.findByAcc_orgId(account);
+    public List<Pix> listAllByAccountId(String accountId){
+        return pixRepository.findByOriginAccountId(accountId);
     }
 
     public Optional<Pix> findPix(String id){

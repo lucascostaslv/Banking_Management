@@ -3,9 +3,12 @@ package team07.Banking_System.controller.transaction;
 import team07.Banking_System.model.transaction.Pix;
 import team07.Banking_System.services.transaction.PixService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pix")
@@ -18,17 +21,25 @@ public class PixController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Pix> findPix(@PathVariable String id) {
-        return pixService.findPix(id);
+    public ResponseEntity<Pix> findPix(@PathVariable String id) {
+        return pixService.findPix(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/list/{acc_org}")
-    public List<Pix> listAll(@PathVariable Pix acc_org) {
-        return pixService.listAll(acc_org);
+    @GetMapping("/list/by-account/{accountId}")
+    public ResponseEntity<List<Pix>> listAllByAccount(@PathVariable String accountId) {
+        List<Pix> pixTransactions = pixService.listAllByAccountId(accountId);
+        return ResponseEntity.ok(pixTransactions);
     }
 
     @PostMapping
-    public Pix createPix(@RequestBody Pix pix) {
-        return pixService.createPix(pix);
+    public ResponseEntity<Pix> createPix(@RequestBody Pix pix) {
+        Pix createdPix = pixService.createPix(pix);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdPix.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdPix);
     }
 }
