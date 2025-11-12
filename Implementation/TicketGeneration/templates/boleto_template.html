@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Boleto - {{ nome }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .boleto { border: 2px solid #000; padding: 20px; width: 600px; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .linha { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .codigo-barras { font-family: 'Libre Barcode 128', cursive; font-size: 36px; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="boleto">
+    <h2>Boleto Bancário</h2>
+    <div class="linha"><strong>Nome:</strong> <span>{{ nome }}</span></div>
+    <div class="linha"><strong>Valor:</strong> <span>{{ valor }}</span></div>
+    <div class="linha"><strong>Vencimento:</strong> <span>{{ vencimento }}</span></div>
+    <hr>
+    <div class="linha"><strong>Código de Barras:</strong></div>
+    <div class="codigo-barras">{{ codigo_barras }}</div>
+  </div>
+</body>
+</html>
