@@ -11,7 +11,7 @@ public abstract class User{
     private String last_name;
     private String cpf;
     private  LocalDate birth_day;
-    private int type;
+    private int type; // remover depois, colocar isso no grupo_usuarios
 
     public User(String first_name, String last_name, String cpf, LocalDate birth_day, int type){
         this.first_name = first_name;
