@@ -6,6 +6,8 @@ import team07.Banking_System.model.account.Account.States;
 import java.util.Random;
 
 @Entity
+@Table(name = "tb_client")
+@PrimaryKeyJoinColumn(name = "id")
 public class Client extends User{
     private int act;
     private States state; 

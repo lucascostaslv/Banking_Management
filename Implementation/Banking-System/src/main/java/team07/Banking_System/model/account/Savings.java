@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "tb_savings")
+@PrimaryKeyJoinColumn(name = "id")
 public class Savings extends Account{
     private LocalDateTime return_date;
 

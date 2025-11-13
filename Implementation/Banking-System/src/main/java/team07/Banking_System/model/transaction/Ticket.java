@@ -6,6 +6,8 @@ import team07.Banking_System.model.account.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "tb_ticket")
+@PrimaryKeyJoinColumn(name = "id")
 public class Ticket extends Transaction{
     private String bars_code;
     private LocalDate due_date;

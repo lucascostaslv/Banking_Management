@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import team07.Banking_System.model.user.Client;
 
 @Entity
+@Table(name = "tb_current")
+@PrimaryKeyJoinColumn(name = "id")
 public class Current extends Account{
     private BigDecimal monthly_tax;
 

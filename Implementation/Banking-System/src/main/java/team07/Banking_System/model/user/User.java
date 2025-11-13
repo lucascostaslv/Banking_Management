@@ -2,7 +2,9 @@ package team07.Banking_System.model.user;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-@MappedSuperclass
+@Entity
+@Table(name = "tb_user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User{
     @Id
     private String id;
@@ -11,14 +13,12 @@ public abstract class User{
     private String last_name;
     private String cpf;
     private  LocalDate birth_day;
-    private int type; // remover depois, colocar isso no grupo_usuarios
 
     public User(String first_name, String last_name, String cpf, LocalDate birth_day, int type){
         this.first_name = first_name;
         this.last_name = last_name;
         this.cpf = cpf;
         this.birth_day = birth_day;
-        this.type = type;
     }
 
     public User(){}
@@ -63,13 +63,5 @@ public abstract class User{
 
     public void setBirth_day(LocalDate birth_day) {
         this.birth_day = birth_day;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }    
+    }  
 }

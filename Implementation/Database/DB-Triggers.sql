@@ -1,0 +1,1 @@
+#Umas das triggers tem que ser sobre colocar tipo a tb_usergroup

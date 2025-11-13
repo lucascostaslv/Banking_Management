@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "tb_pix")
+@PrimaryKeyJoinColumn(name = "id")
 public class Pix extends Transaction{
     private String key_org;
     private String key_trg;

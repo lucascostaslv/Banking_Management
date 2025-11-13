@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.Random;
 
 @Entity
+@Table(name = "tb_manager")
+@PrimaryKeyJoinColumn(name = "id")
 public class Manager extends User{
     private String role;
 

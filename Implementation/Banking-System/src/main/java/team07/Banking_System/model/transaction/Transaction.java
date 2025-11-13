@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
 
-@MappedSuperclass
+@Entity
+@Table(name = "tb_transaction")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Transaction {
     @Id
     private String id;

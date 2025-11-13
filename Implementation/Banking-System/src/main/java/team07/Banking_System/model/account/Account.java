@@ -5,14 +5,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import team07.Banking_System.model.user.Client;
 
 @Entity
+@Table(name = "tb_account")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account {
     @Id
@@ -29,9 +27,8 @@ public abstract class Account {
     @Column(columnDefinition = "TIMESTAMP(3)")
     private LocalDateTime openDate;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<PixKeys> keys = new ArrayList<>();
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL) 
+    private PixKeys pixKey;
 
     public Account(Client c, String type){
         if (c == null) {
