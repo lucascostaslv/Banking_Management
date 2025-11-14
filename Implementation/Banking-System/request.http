@@ -12,7 +12,7 @@
 ### FASE 1 - CRIAR USUÁRIOS
 ###
 
-# 1.1 - Criar Cliente 1
+# 1.1 - Criar Cliente 1 (Ana)
 # @name createClient1
 POST {{baseUrl}}/usr_client
 Content-Type: application/json
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ###
-# 1.2 - Criar Cliente 2
+# 1.2 - Criar Cliente 2 (Bruno)
 # @name createClient2
 POST {{baseUrl}}/usr_client
 Content-Type: application/json
@@ -94,7 +94,7 @@ GET {{baseUrl}}/usr_manager/{{createManager1.response.body.id}}
 ### FASE 3 - CRIAR CONTAS
 ###
 
-# 9.1 - Criar Conta Corrente para Cliente 1
+# 9.1 - Criar Conta Corrente para Cliente 1 (Ana)
 # @name createCurrentAccount1
 POST {{baseUrl}}/acc_current
 Content-Type: application/json
@@ -104,7 +104,7 @@ Content-Type: application/json
 }
 
 ###
-# 9.2 - Criar Conta Corrente para Cliente 2
+# 9.2 - Criar Conta Corrente para Cliente 2 (Bruno)
 # @name createCurrentAccount2
 POST {{baseUrl}}/acc_current
 Content-Type: application/json
@@ -114,7 +114,7 @@ Content-Type: application/json
 }
 
 ###
-# 11.1 - Criar Conta Poupança para Cliente 1
+# 11.1 - Criar Conta Poupança para Cliente 1 (Ana)
 # @name createSavingsAccount1
 POST {{baseUrl}}/savings
 Content-Type: application/json
@@ -124,7 +124,7 @@ Content-Type: application/json
 }
 
 ###
-# 11.2 - Criar Conta Poupança para Cliente 2
+# 11.2 - Criar Conta Poupança para Cliente 2 (Bruno)
 # @name createSavingsAccount2
 POST {{baseUrl}}/savings
 Content-Type: application/json
@@ -149,10 +149,48 @@ GET {{baseUrl}}/savings/{{createSavingsAccount2.response.body.id}}
 
 
 ###
+### FASE 4.5 - CADASTRAR CHAVES PIX (NOVO)
+###
+
+# 14.5.1 - Cadastrar Chave Email para Conta Corrente 1 (Ana)
+# @name createPixKeyEmail-CC1
+POST {{baseUrl}}/pixkey/email
+Content-Type: application/json
+
+{
+    "accountId": "{{createCurrentAccount1.response.body.id}}",
+    "keyValue": "ana.silva@bank.com"
+}
+
+###
+# 14.5.2 - Cadastrar Chave Email para Conta Poupança 2 (Bruno)
+# @name createPixKeyEmail-CP2
+POST {{baseUrl}}/pixkey/email
+Content-Type: application/json
+
+{
+    "accountId": "{{createSavingsAccount2.response.body.id}}",
+    "keyValue": "bruno.costa@bank.com"
+}
+
+###
+# 14.5.3 - Cadastrar Chave Telefone para Conta Corrente 2 (Bruno)
+# @name createPixKeyPhone-CC2
+POST {{baseUrl}}/pixkey/phone
+Content-Type: application/json
+
+{
+    "accountId": "{{createCurrentAccount2.response.body.id}}",
+    "keyValue": "+5521999998888"
+}
+
+
+###
 ### FASE 5 - CRIAR TRANSAÇÕES
 ###
 
 # Antes de rodar as transações, vamos adicionar saldo às contas
+# 
 # @name depositIntoCurrentAccount1
 PUT {{baseUrl}}/acc_current/{{createCurrentAccount1.response.body.id}}
 Content-Type: application/json
@@ -192,29 +230,29 @@ Content-Type: application/json
 }
 
 ###
-# 15.1 - Criar PIX da Conta Corrente 1 para Poupança 2
+# 15.1 - Criar PIX da Conta Corrente 1 (Ana) para Poupança 2 (Bruno)
+# (CORRIGIDO: Usando a chave de email do Bruno e sem targetAccount)
 # @name createPix1
 POST {{baseUrl}}/pix
 Content-Type: application/json
 
 {
     "originAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
-    "targetAccount": { "id": "{{createSavingsAccount2.response.body.id}}" },
     "value": 150.75,
-    "pixKey": "55566677788"
+    "pixKey": "bruno.costa@bank.com"
 }
 
 ###
-# 15.2 - Criar PIX da Conta Corrente 2 para Corrente 1
+# 15.2 - Criar PIX da Conta Corrente 2 (Bruno) para Corrente 1 (Ana)
+# (CORRIGIDO: Usando a chave de email da Ana e sem targetAccount)
 # @name createPix2
 POST {{baseUrl}}/pix
 Content-Type: application/json
 
 {
     "originAccount": { "id": "{{createCurrentAccount2.response.body.id}}" },
-    "targetAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
     "value": 50.00,
-    "pixKey": "11122233344"
+    "pixKey": "ana.silva@bank.com"
 }
 
 ###
@@ -226,7 +264,7 @@ Content-Type: application/json
 {
     "originAccount": { "id": "{{createCurrentAccount1.response.body.id}}" },
     "value": 250.00,
-    "dueDate": "2024-12-31"
+    "dueDate": "2025-12-31"
 }
 
 ###
@@ -238,7 +276,7 @@ Content-Type: application/json
 {
     "originAccount": { "id": "{{createCurrentAccount2.response.body.id}}" },
     "value": 100.00,
-    "dueDate": "2024-11-30"
+    "dueDate": "2025-11-30"
 }
 
 ###
@@ -298,7 +336,6 @@ Content-Type: application/json
 # @name updateCurrentAccount1
 PUT {{baseUrl}}/acc_current/{{createCurrentAccount1.response.body.id}}
 Content-Type: application/json
-# O tipo é necessário para a desserialização correta no backend
 
 {
     "id": "{{createCurrentAccount1.response.body.id}}",
@@ -312,7 +349,6 @@ Content-Type: application/json
 # @name updateSavingsAccount2
 PUT {{baseUrl}}/savings/{{createSavingsAccount2.response.body.id}}
 Content-Type: application/json
-# O tipo é necessário para a desserialização correta no backend
 
 {
     "id": "{{createSavingsAccount2.response.body.id}}",
@@ -331,7 +367,7 @@ Content-Type: application/json
 DELETE {{baseUrl}}/ticket/{{createTicket1.response.body.id}}
 
 ###
-# 26 - TENTAR deletar boleto PAGO (Boleto 2) - DEVE FALHAR com erro 400 ou 409
+# 26 - TENTAR deletar boleto PAGO (Boleto 2) - DEVE FALHAR
 # @name tryDeletePaidTicket2
 DELETE {{baseUrl}}/ticket/{{createTicket2.response.body.id}}
 

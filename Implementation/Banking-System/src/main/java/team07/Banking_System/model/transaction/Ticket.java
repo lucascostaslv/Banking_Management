@@ -13,7 +13,7 @@ public class Ticket extends Transaction{
     private LocalDate due_date;
     
     public Ticket(Account acc_trg, BigDecimal value, LocalDate due_date){
-        super(acc_trg, value);
+        super(acc_trg, value, "ticket");
         this.due_date = due_date;
     }
 

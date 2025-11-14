@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS payment_bank;
 USE payment_bank;
 
-CREATE TABLE tb_user ( #ok
+CREATE TABLE tb_user (
 	id VARCHAR(9) PRIMARY KEY,
     cpf VARCHAR(11) NOT NULL UNIQUE,
 	first_name VARCHAR(63) NOT NULL,
@@ -9,8 +9,7 @@ CREATE TABLE tb_user ( #ok
     birth_day DATE NOT NULL
 );
 
-# 1 para maganer 2 para client
-CREATE TABLE tb_userGroup ( #nao criado obvio
+CREATE TABLE tb_userGroup (
 	id VARCHAR(9) PRIMARY KEY,
 	type INT NOT NULL, 
 
@@ -20,7 +19,7 @@ CREATE TABLE tb_userGroup ( #nao criado obvio
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_client ( #ok
+CREATE TABLE tb_client (
 	id VARCHAR(9) PRIMARY KEY,
 	act INT NOT NULL DEFAULT 1,
     state VARCHAR(2),
@@ -31,7 +30,7 @@ CREATE TABLE tb_client ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_manager ( #ok
+CREATE TABLE tb_manager (
 	id VARCHAR(9) PRIMARY KEY,
 	role VARCHAR(255),
     
@@ -41,8 +40,8 @@ CREATE TABLE tb_manager ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_account ( #Faltou pixkeys
-	id VARCHAR(10) PRIMARY KEY,
+CREATE TABLE tb_account (
+	id VARCHAR(12) PRIMARY KEY, -- CORRIGIDO: DE 10 PARA 12
     account_number INT NOT NULL,
     balance DECIMAL(13,2) NOT NULL DEFAULT 0.0,
 	type VARCHAR(63) NOT NULL,
@@ -55,20 +54,20 @@ CREATE TABLE tb_account ( #Faltou pixkeys
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_pixKey ( #ok
-	id VARCHAR(10) PRIMARY KEY,
+CREATE TABLE tb_pix_key ( -- CORRIGIDO: de tb_pixKey para tb_pix_key
+	id VARCHAR(12) PRIMARY KEY, -- CORRIGIDO: DE 10 PARA 12
     email VARCHAR(127) UNIQUE,
-    phone_number VARCHAR(14), -- +5500900000000
+    phone_number VARCHAR(14),
     rand_key VARCHAR(63),
     
-    CONSTRAINT FK_pixKey_account 
+    CONSTRAINT FK_pix_key_account -- CORRIGIDO
     FOREIGN KEY (id) REFERENCES tb_account (id)
 		ON UPDATE CASCADE  
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_current ( #ok
-	id VARCHAR(10) PRIMARY KEY,
+CREATE TABLE tb_current (
+	id VARCHAR(12) PRIMARY KEY, -- CORRIGIDO: DE 10 PARA 12
     monthly_tax DECIMAL(4,2) NOT NULL DEFAULT 0.52,
     
     CONSTRAINT FK_current_account 
@@ -77,8 +76,8 @@ CREATE TABLE tb_current ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_savings ( #ok
-	id VARCHAR(10) PRIMARY KEY,
+CREATE TABLE tb_savings (
+	id VARCHAR(12) PRIMARY KEY, -- CORRIGIDO: DE 10 PARA 12
     return_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     return_amount DECIMAL(9,2) NOT NULL,
     
@@ -88,14 +87,15 @@ CREATE TABLE tb_savings ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_transaction ( #ok
-	id VARCHAR(17) PRIMARY KEY, -- "ddyyyyMMHHmmssSSS"
+CREATE TABLE tb_transaction (
+	id VARCHAR(17) PRIMARY KEY,
     type VARCHAR(63) NOT NULL,
     payment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     transaction_value DECIMAL(13,2) NOT NULL,
     
-    origin_account_id VARCHAR(10),
-    target_account_id VARCHAR(10) NOT NULL,
+    -- LÓGICA CORRIGIDA:
+    origin_account_id VARCHAR(12) NOT NULL, -- Quem recebe (no boleto) ou quem paga (no pix)
+    target_account_id VARCHAR(12),          -- Quem paga (no boleto) ou quem recebe (no pix)
     
     CONSTRAINT FK_transaction_OGaccount 
     FOREIGN KEY (origin_account_id) REFERENCES tb_account (id)
@@ -108,7 +108,7 @@ CREATE TABLE tb_transaction ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_pix ( #ok
+CREATE TABLE tb_pix (
 	id VARCHAR(17) PRIMARY KEY,
     key_org VARCHAR(127) NOT NULL,
     key_trg VARCHAR(127) NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE tb_pix ( #ok
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_ticket ( #ok
+CREATE TABLE tb_ticket (
 	id VARCHAR(17) PRIMARY KEY,
 	bars_code VARCHAR(255) NOT NULL,
     due_date DATE NOT NULL,

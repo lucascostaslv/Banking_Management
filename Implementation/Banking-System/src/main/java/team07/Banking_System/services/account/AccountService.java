@@ -6,6 +6,7 @@ import team07.Banking_System.model.account.Account;
 import team07.Banking_System.model.user.Client;
 import team07.Banking_System.repository.user.ClientRepository;
 
+import java.time.LocalDateTime; // IMPORTAR
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -35,9 +36,16 @@ public abstract class AccountService<T extends Account, R extends JpaRepository<
         }
         Client client = clientRepository.findById(account.getClient().getId())
                 .orElseThrow(() -> new NoSuchElementException("Cliente com ID " + account.getClient().getId() + " não encontrado."));
+        
         account.setClient(client);
         account.generateAndSetId();
         account.generateAndSetAccountNumber();
+        
+        // --- CORREÇÃO ---
+        // Define a data de abertura, já que o construtor padrão não faz isso.
+        account.setOpenDate(LocalDateTime.now());
+        // --- FIM DA CORREÇÃO ---
+
         return accountRepository.save(account);
     }
 

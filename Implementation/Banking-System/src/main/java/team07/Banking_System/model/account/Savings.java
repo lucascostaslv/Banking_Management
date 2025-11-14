@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Table(name = "tb_savings")
 @PrimaryKeyJoinColumn(name = "id")
 public class Savings extends Account{
+    
     @Column(columnDefinition = "TIMESTAMP(3)")
     private LocalDateTime return_date;
 
@@ -19,7 +20,14 @@ public class Savings extends Account{
         super(c, type);
     }
 
-    public Savings(){};
+    // --- CORREÇÃO ---
+    public Savings(){
+        super.setType("savings");
+        // Define valores padrão para evitar erro NOT NULL
+        this.return_date = LocalDateTime.now();
+        this.return_amount = BigDecimal.ZERO;
+    };
+    // --- FIM DA CORREÇÃO ---
 
     public LocalDateTime getReturn_date() {
         return return_date;
@@ -36,4 +44,4 @@ public class Savings extends Account{
     public void setReturn_amount(BigDecimal return_amount) {
         this.return_amount = return_amount;
     }
-}  
+}

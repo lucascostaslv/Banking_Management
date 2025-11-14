@@ -22,7 +22,7 @@ FOR EACH ROW
 BEGIN
 	IF NEW.act = 0 THEN
 		-- Ao desativar um cliente (act=0), deleta as chaves PIX associadas às suas contas.
-		DELETE FROM tb_pixKey 
+		DELETE FROM tb_pix_Key 
         WHERE id IN (SELECT id FROM tb_account WHERE client_id = NEW.id);
     END IF;
 END$

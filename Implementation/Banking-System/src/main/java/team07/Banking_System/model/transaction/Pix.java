@@ -1,36 +1,35 @@
 package team07.Banking_System.model.transaction;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import team07.Banking_System.model.account.Account;
+
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "tb_pix")
 @PrimaryKeyJoinColumn(name = "id")
-public class Pix extends Transaction{
-    private String key_org;
-    private String key_trg;
+public class Pix extends Transaction {
 
-    public Pix(String key_org, String key_trg, BigDecimal value){
-        this.setValue(value);
-        this.key_org = key_org;
-        this.key_trg = key_trg;
+    @Column(name = "pix_key")
+    private String pixKey;
+
+    public Pix() {
+        super.setType("pix");
     }
 
-    public Pix(){}
-
-    public String getKey_org() {
-        return key_org;
+    public Pix(Account originAccount, BigDecimal value, String pixKey) {
+        super(originAccount, value, "pix");
+        this.pixKey = pixKey;
     }
 
-    public void setKey_org(String key_org) {
-        this.key_org = key_org;
+    public String getPixKey() {
+        return pixKey;
     }
 
-    public String getKey_trg() {
-        return key_trg;
-    }
-
-    public void setKey_trg(String key_trg) {
-        this.key_trg = key_trg;
+    public void setPixKey(String pixKey) {
+        this.pixKey = pixKey;
     }
 }

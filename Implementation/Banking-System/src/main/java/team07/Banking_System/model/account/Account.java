@@ -24,10 +24,11 @@ public abstract class Account {
     private BigDecimal balance = BigDecimal.ZERO;
     private String type;
     
-    @Column(columnDefinition = "TIMESTAMP(3)")
+    @Column(columnDefinition = "TIMESTAMP(3)", updatable = false)
     private LocalDateTime openDate;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL) 
+
     private PixKeys pixKey;
 
     public Account(Client c, String type){
@@ -119,6 +120,15 @@ public abstract class Account {
     }
     public void setType(String type) {
         this.type = type;
+    }
+
+    public PixKeys getPixKey() {
+        return pixKey;
+    }
+
+    public void setPixKey(PixKeys pixKey) {
+        this.pixKey = pixKey;
+        pixKey.setAccount(this); // Sincroniza o outro lado da relação
     }
 
     public enum States{
