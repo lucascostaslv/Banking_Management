@@ -9,6 +9,7 @@ CREATE TABLE tb_user ( #ok
     birth_day DATE NOT NULL
 );
 
+# 1 para maganer 2 para client
 CREATE TABLE tb_userGroup ( #nao criado obvio
 	id VARCHAR(9) PRIMARY KEY,
 	type INT NOT NULL, 
