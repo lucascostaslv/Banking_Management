@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS payment_bank;
 USE payment_bank;
 
-CREATE TABLE tb_user (
+CREATE TABLE tb_user ( #ok
 	id VARCHAR(9) PRIMARY KEY,
     cpf VARCHAR(11) NOT NULL UNIQUE,
 	first_name VARCHAR(63) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE tb_user (
     birth_day DATE NOT NULL
 );
 
-CREATE TABLE tb_userGroup (
+CREATE TABLE tb_userGroup ( #nao criado obvio
 	id VARCHAR(9) PRIMARY KEY,
 	type INT NOT NULL, 
 
@@ -19,7 +19,7 @@ CREATE TABLE tb_userGroup (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_client (
+CREATE TABLE tb_client ( #ok
 	id VARCHAR(9) PRIMARY KEY,
 	act INT NOT NULL DEFAULT 1,
     state VARCHAR(2),
@@ -30,7 +30,7 @@ CREATE TABLE tb_client (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_manager (
+CREATE TABLE tb_manager ( #ok
 	id VARCHAR(9) PRIMARY KEY,
 	role VARCHAR(255),
     
@@ -40,13 +40,12 @@ CREATE TABLE tb_manager (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_account (
+CREATE TABLE tb_account ( #Faltou pixkeys
 	id VARCHAR(10) PRIMARY KEY,
-    accountNumber INT NOT NULL,
+    account_number INT NOT NULL,
     balance DECIMAL(13,2) NOT NULL DEFAULT 0.0,
 	type VARCHAR(63) NOT NULL,
     open_date TIMESTAMP NOT NULL,
-    pix_keys VARCHAR(10),
     client_id VARCHAR(9),
 
     CONSTRAINT FK_account_client
@@ -55,7 +54,7 @@ CREATE TABLE tb_account (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_pixKey (
+CREATE TABLE tb_pixKey ( #ok
 	id VARCHAR(10) PRIMARY KEY,
     email VARCHAR(127) UNIQUE,
     phone_number VARCHAR(14), -- +5500900000000
@@ -67,14 +66,7 @@ CREATE TABLE tb_pixKey (
         ON DELETE RESTRICT
 );
 
--- adiciona FK que referencia tb_pixKey
-ALTER TABLE tb_account
-ADD CONSTRAINT FK_account_pixKey
-FOREIGN KEY (pix_keys) REFERENCES tb_pixKey (id)
-	ON UPDATE CASCADE  
-    ON DELETE RESTRICT;
-
-CREATE TABLE tb_current (
+CREATE TABLE tb_current ( #ok
 	id VARCHAR(10) PRIMARY KEY,
     monthly_tax DECIMAL(4,2) NOT NULL DEFAULT 0.52,
     
@@ -84,7 +76,7 @@ CREATE TABLE tb_current (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_savings (
+CREATE TABLE tb_savings ( #ok
 	id VARCHAR(10) PRIMARY KEY,
     return_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     return_amount DECIMAL(9,2) NOT NULL,
@@ -95,7 +87,7 @@ CREATE TABLE tb_savings (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_transaction (
+CREATE TABLE tb_transaction ( #ok
 	id VARCHAR(17) PRIMARY KEY, -- "ddyyyyMMHHmmssSSS"
     type VARCHAR(63) NOT NULL,
     payment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -115,7 +107,7 @@ CREATE TABLE tb_transaction (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_pix (
+CREATE TABLE tb_pix ( #ok
 	id VARCHAR(17) PRIMARY KEY,
     key_org VARCHAR(127) NOT NULL,
     key_trg VARCHAR(127) NOT NULL,
@@ -126,7 +118,7 @@ CREATE TABLE tb_pix (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tb_ticket (
+CREATE TABLE tb_ticket ( #ok
 	id VARCHAR(17) PRIMARY KEY,
 	bars_code VARCHAR(255) NOT NULL,
     due_date DATE NOT NULL,

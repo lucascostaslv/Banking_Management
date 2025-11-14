@@ -23,6 +23,8 @@ public abstract class Transaction {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "client", "keys"})
     private Account targetAccount;
     private String type;
+
+    @Column(columnDefinition = "TIMESTAMP(3)")
     private LocalDateTime payment_date;
 
     @Column(name = "transaction_value")

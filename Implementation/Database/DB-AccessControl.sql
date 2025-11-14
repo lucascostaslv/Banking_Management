@@ -12,3 +12,6 @@ ON payment_bank.* TO 'admin';
 
 GRANT 'crud_user' TO 'system_access'@'localhost';
 GRANT 'admin' TO 'employee'@'localhost';
+
+SET DEFAULT ROLE 'crud_user' TO 'system_access'@'localhost';
+SET DEFAULT ROLE 'admin' TO 'employee'@'localhost';

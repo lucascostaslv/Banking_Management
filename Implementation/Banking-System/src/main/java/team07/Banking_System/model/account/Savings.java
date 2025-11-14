@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Table(name = "tb_savings")
 @PrimaryKeyJoinColumn(name = "id")
 public class Savings extends Account{
+    @Column(columnDefinition = "TIMESTAMP(3)")
     private LocalDateTime return_date;
 
     @Column(name = "return_amount")
