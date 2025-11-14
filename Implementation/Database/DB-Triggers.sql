@@ -21,9 +21,9 @@ AFTER UPDATE ON payment_bank.tb_client
 FOR EACH ROW
 BEGIN
 	IF NEW.act = 0 THEN
-		UPDATE tb_pixKey 
-		SET email = NULL, phone_number = NULL, randKey = NULL
-        WHERE id = NEW.id;
+		-- Ao desativar um cliente (act=0), deleta as chaves PIX associadas às suas contas.
+		DELETE FROM tb_pixKey 
+        WHERE id IN (SELECT id FROM tb_account WHERE client_id = NEW.id);
     END IF;
 END$
 DELIMITER ;
