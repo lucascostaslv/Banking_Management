@@ -3,8 +3,8 @@ CREATE USER 'system_access'@'localhost' IDENTIFIED BY '12345';
 CREATE USER 'employee'@'localhost' IDENTIFIED BY 'admin0';
 
 CREATE ROLE IF NOT EXISTS 'crud_user';
-GRANT SELECT, INSERT, UPDATE, DELETE
-ON payment_bank.* TO 'crud_user';
+-- Adicionada a permissão EXECUTE para permitir a chamada de Stored Procedures
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON payment_bank.* TO 'crud_user';
 
 CREATE ROLE IF NOT EXISTS 'admin';
 GRANT SELECT, INSERT, UPDATE, CREATE, ALTER, INDEX, CREATE VIEW, SHOW VIEW

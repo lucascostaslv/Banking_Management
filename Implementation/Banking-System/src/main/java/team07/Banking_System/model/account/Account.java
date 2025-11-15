@@ -7,11 +7,14 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import team07.Banking_System.model.user.Client;
 
 @Entity
 @Table(name = "tb_account")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Account {
     @Id
     private String id;

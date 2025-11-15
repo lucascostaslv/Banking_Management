@@ -36,6 +36,10 @@ public class PixKeys {
     public PixKeys() {
     }
 
+    public PixKeys(Account account) {
+        this.account = account;
+    }
+
     // Getters and Setters
     public String getId() {
         return id;

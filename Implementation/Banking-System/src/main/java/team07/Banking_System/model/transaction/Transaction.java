@@ -7,9 +7,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "tb_transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Transaction {
 
     @Id
@@ -23,22 +26,28 @@ public abstract class Transaction {
     @JoinColumn(name = "target_account_id")
     private Account targetAccount;
 
+    // CORREÇÃO: Mapeado para a coluna correta 'transaction_value'
+    @Column(name = "transaction_value")
     private BigDecimal value;
 
-    @Column(name = "transaction_date", columnDefinition = "TIMESTAMP(3)")
-    private LocalDateTime transactionDate;
+    // CORREÇÃO FINAL: Mapeado para a coluna correta 'payment_date'
+    @Column(name = "payment_date", columnDefinition = "TIMESTAMP(3)")
+    private LocalDateTime paymentDate;
 
     private String type;
 
+    private String status;
+
     public Transaction() {
-        this.transactionDate = LocalDateTime.now();
+        // A data é definida pela procedure ou no momento da criação
     }
 
     public Transaction(Account originAccount, BigDecimal value, String type) {
         this.originAccount = originAccount;
         this.value = value;
         this.type = type;
-        this.transactionDate = LocalDateTime.now();
+        this.status = "PENDING"; // Transações começam como pendentes
+        // A data do pagamento (paymentDate) será nula até a transação ser efetivada
     }
 
     public void generateAndSetId() {
@@ -81,12 +90,12 @@ public abstract class Transaction {
         this.value = value;
     }
 
-    public LocalDateTime getTransactionDate() {
-        return transactionDate;
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
-        this.transactionDate = transactionDate;
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
     }
 
     public String getType() {
@@ -95,5 +104,13 @@ public abstract class Transaction {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

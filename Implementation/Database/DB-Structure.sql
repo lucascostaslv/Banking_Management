@@ -90,6 +90,7 @@ CREATE TABLE tb_savings (
 CREATE TABLE tb_transaction (
 	id VARCHAR(17) PRIMARY KEY,
     type VARCHAR(63) NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
     payment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     transaction_value DECIMAL(13,2) NOT NULL,
     
