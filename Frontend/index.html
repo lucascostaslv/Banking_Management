@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Management System - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏦 Banking System</h1>
+                <p>Faça login para acessar o sistema</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        autocomplete="username"
+                        placeholder="Digite seu usuário"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password"
+                        placeholder="Digite sua senha"
+                    >
+                </div>
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Entrar
+                </button>
+            </form>
+            <div class="login-footer">
+                <p>Usuários padrão: <code>admin</code> / <code>manager</code> / <code>client</code></p>
+                <p>Senha padrão: <code>12345</code></p>
+            </div>
+        </div>
+    </div>
+    <script src="js/auth.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
+

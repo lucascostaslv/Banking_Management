@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transações - Banking System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <script src="js/auth.js"></script>
+    <script>
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>🏦 Banking System</h2>
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="clients.html" class="nav-link">Clientes</a>
+            <a href="accounts.html" class="nav-link">Contas</a>
+            <a href="transactions.html" class="nav-link active">Transações</a>
+            <a href="tickets.html" class="nav-link">Boletos</a>
+            <button class="btn btn-secondary" onclick="auth.logout()">Sair</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Transações PIX</h1>
+            <p>Realize transferências via PIX</p>
+        </div>
+
+        <div class="form-container">
+            <h2>Nova Transação PIX</h2>
+            <form id="pixForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="originAccountId">Conta de Origem</label>
+                        <select id="originAccountId" required>
+                            <option value="">Carregando...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pixKey">Chave PIX</label>
+                        <input type="text" id="pixKey" required placeholder="Email, telefone ou chave aleatória">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pixValue">Valor</label>
+                        <input type="number" id="pixValue" step="0.01" min="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+                <div id="formMessage" class="error-message" style="display: none;"></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Realizar PIX</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Histórico de Transações</h2>
+            </div>
+            <div id="loading" class="loading">
+                <p>As transações serão exibidas aqui após serem realizadas</p>
+            </div>
+            <table id="transactionsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Conta Origem</th>
+                        <th>Conta Destino</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTableBody">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/transactions.js"></script>
+</body>
+</html>
+

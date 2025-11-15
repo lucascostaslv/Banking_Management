@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contas - Banking System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <script src="js/auth.js"></script>
+    <script>
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>🏦 Banking System</h2>
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="clients.html" class="nav-link">Clientes</a>
+            <a href="accounts.html" class="nav-link active">Contas</a>
+            <a href="transactions.html" class="nav-link">Transações</a>
+            <a href="tickets.html" class="nav-link">Boletos</a>
+            <button class="btn btn-secondary" onclick="auth.logout()">Sair</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Gerenciar Contas</h1>
+            <p>Contas correntes e poupança</p>
+        </div>
+
+        <div class="form-container">
+            <h2 id="formTitle">Nova Conta</h2>
+            <form id="accountForm">
+                <input type="hidden" id="accountId">
+                <input type="hidden" id="accountType">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="accountTypeSelect">Tipo de Conta</label>
+                        <select id="accountTypeSelect" required onchange="handleAccountTypeChange()">
+                            <option value="">Selecione...</option>
+                            <option value="current">Conta Corrente</option>
+                            <option value="savings">Conta Poupança</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientIdSelect">Cliente</label>
+                        <select id="clientIdSelect" required>
+                            <option value="">Carregando...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="balance">Saldo Inicial</label>
+                        <input type="number" id="balance" step="0.01" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">Estado</label>
+                        <select id="state" required>
+                            <option value="ACTIVE">Ativa</option>
+                            <option value="INACTIVE">Inativa</option>
+                            <option value="BLOCKED">Bloqueada</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="formMessage" class="error-message" style="display: none;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Contas Correntes</h2>
+            </div>
+            <div id="loadingCurrent" class="loading">
+                <div class="spinner"></div>
+                <p>Carregando contas correntes...</p>
+            </div>
+            <table id="currentTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Saldo</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="currentTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container" style="margin-top: 24px;">
+            <div class="table-header">
+                <h2>Contas Poupança</h2>
+            </div>
+            <div id="loadingSavings" class="loading">
+                <div class="spinner"></div>
+                <p>Carregando contas poupança...</p>
+            </div>
+            <table id="savingsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Saldo</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="savingsTableBody">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/accounts.js"></script>
+</body>
+</html>
+

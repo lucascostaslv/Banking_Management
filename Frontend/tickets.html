@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boletos - Banking System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <script src="js/auth.js"></script>
+    <script>
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>🏦 Banking System</h2>
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="clients.html" class="nav-link">Clientes</a>
+            <a href="accounts.html" class="nav-link">Contas</a>
+            <a href="transactions.html" class="nav-link">Transações</a>
+            <a href="tickets.html" class="nav-link active">Boletos</a>
+            <button class="btn btn-secondary" onclick="auth.logout()">Sair</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Gerenciar Boletos</h1>
+            <p>Crie e gerencie boletos de pagamento</p>
+        </div>
+
+        <div class="form-container">
+            <h2>Novo Boleto</h2>
+            <form id="ticketForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="originAccountId">Conta de Origem</label>
+                        <select id="originAccountId" required>
+                            <option value="">Carregando...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketValue">Valor</label>
+                        <input type="number" id="ticketValue" step="0.01" min="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dueDate">Data de Vencimento</label>
+                        <input type="date" id="dueDate" required>
+                    </div>
+                </div>
+                <div id="formMessage" class="error-message" style="display: none;"></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Gerar Boleto</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Boletos</h2>
+                <div>
+                    <select id="filterAccount" style="padding: 8px; margin-right: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <option value="">Filtrar por conta...</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="loadTickets()">Atualizar</button>
+                </div>
+            </div>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Carregando boletos...</p>
+            </div>
+            <table id="ticketsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Conta</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketsTableBody">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/tickets.js"></script>
+</body>
+</html>
+

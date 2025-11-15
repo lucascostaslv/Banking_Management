@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Banking System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Verificação de autenticação -->
+    <script src="js/auth.js"></script>
+    <script>
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2>🏦 Banking System</h2>
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="clients.html" class="nav-link">Clientes</a>
+            <a href="accounts.html" class="nav-link">Contas</a>
+            <a href="transactions.html" class="nav-link">Transações</a>
+            <a href="tickets.html" class="nav-link">Boletos</a>
+            <button class="btn btn-secondary" onclick="auth.logout()">Sair</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Bem-vindo, <span id="currentUser"></span>!</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3 id="totalClients">-</h3>
+                    <p>Total de Clientes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💳</div>
+                <div class="stat-info">
+                    <h3 id="totalAccounts">-</h3>
+                    <p>Total de Contas</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="totalTransactions">-</h3>
+                    <p>Transações Hoje</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-info">
+                    <h3 id="totalTickets">-</h3>
+                    <p>Boletos Pendentes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Ações Rápidas</h2>
+            <div class="actions-grid">
+                <a href="clients.html" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <h3>Criar Cliente</h3>
+                    <p>Cadastrar novo cliente no sistema</p>
+                </a>
+                <a href="accounts.html" class="action-card">
+                    <div class="action-icon">💳</div>
+                    <h3>Nova Conta</h3>
+                    <p>Abrir conta corrente ou poupança</p>
+                </a>
+                <a href="transactions.html" class="action-card">
+                    <div class="action-icon">💸</div>
+                    <h3>Fazer PIX</h3>
+                    <p>Realizar transferência via PIX</p>
+                </a>
+                <a href="tickets.html" class="action-card">
+                    <div class="action-icon">📄</div>
+                    <h3>Gerar Boleto</h3>
+                    <p>Criar novo boleto de pagamento</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
+
