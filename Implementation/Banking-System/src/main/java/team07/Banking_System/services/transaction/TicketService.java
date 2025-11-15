@@ -7,12 +7,20 @@ import team07.Banking_System.repository.transaction.TransactionRepository;
 import team07.Banking_System.model.transaction.Ticket;
 import team07.Banking_System.model.transaction.TicketDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 import team07.Banking_System.services.account.CurrentService;
 import team07.Banking_System.services.account.SavingsService;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +31,13 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final HttpClient httpClient;
+
+    @Value("${ticket.generator.api.url}")
+    private String ticketApiBaseUrl;
+
+    // Formatter para garantir que a data seja enviada no formato YYYY-MM-DD
+    private static final DateTimeFormatter API_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static final Logger logger = Logger.getLogger(TicketService.class.getName());
 
@@ -35,6 +50,7 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
     }
 
     public List<Ticket> listAllByAccountId(String accountId) {
@@ -130,5 +146,47 @@ public class TicketService {
     private String generateBarsCode() {
         // Gera um código de barras simples (você pode melhorar isso)
         return String.format("%020d", System.currentTimeMillis() % 100000000000000000L);
+    }
+
+    public byte[] downloadTicketPdf(String ticketId) {
+        // 1. Busca os dados do boleto no banco de dados principal usando a projeção
+        TicketRepository.TicketDownloadProjection ticketData = ticketRepository.findTicketDataForDownload(ticketId)
+                .orElseThrow(() -> new NoSuchElementException("Dados para geração do boleto não encontrados para o ID: " + ticketId));
+
+        // 2. Constrói a URL para a API Python de forma segura
+        URI uri = UriComponentsBuilder.fromHttpUrl(ticketApiBaseUrl)
+                .path("/download-ticket/{id_boleto}")
+                .queryParam("id_conta", ticketData.getRecipientAccountId())
+                .queryParam("n_conta", ticketData.getRecipientAccountNumber())
+                .queryParam("first_name", ticketData.getRecipientFirstName())
+                .queryParam("last_name", ticketData.getRecipientLastName())
+                .queryParam("barcode", ticketData.getBarcode())
+                .queryParam("amount", ticketData.getAmount())
+                .queryParam("due_date", ticketData.getDueDate().format(API_DATE_FORMATTER))
+                .buildAndExpand(ticketId) // Expande o {id_boleto}
+                .toUri(); // Constrói o URI, realizando a codificação necessária
+
+        logger.info("Requisitando PDF do boleto na URL: " + uri.toString());
+
+        try {
+            // 3. Faz a requisição GET para a API Python
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
+            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+            if (response.statusCode() != 200) {
+                logger.severe("Falha ao gerar o boleto na API externa. Status: " + response.statusCode() + " | Body: " + new String(response.body()));
+                throw new RuntimeException("Falha ao gerar o boleto na API externa. Status: " + response.statusCode());
+            }
+
+            // 4. Retorna o corpo da resposta (o arquivo PDF em bytes)
+            return response.body();
+        } catch (Exception e) {
+            logger.severe("Erro de comunicação com a API de geração de boletos: " + e.getMessage());
+            throw new RuntimeException("Erro de comunicação com a API de geração de boletos.", e);
+        }
     }
 }

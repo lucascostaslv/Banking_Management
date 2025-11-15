@@ -375,3 +375,13 @@ DELETE {{baseUrl}}/ticket/{{createTicket2.response.body.id}}
 # 27 - Deletar manager 2
 # @name deleteManager2
 DELETE {{baseUrl}}/usr_manager/{{createManager2.response.body.id}}
+
+###
+### FASE 9 - TESTAR DOWNLOAD DE BOLETO (NOVA FUNCIONALIDADE)
+###
+
+# 28 - Fazer o download do Boleto 1 (pendente)
+# Esta requisição irá chamar o endpoint no backend Java,
+# que por sua vez chamará a API Python para gerar/buscar o PDF.
+# @name downloadTicket1
+GET {{baseUrl}}/ticket/{{createTicket1.response.body.id}}/download

@@ -1,6 +1,8 @@
 package team07.Banking_System.controller.transaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team07.Banking_System.model.transaction.Ticket;
@@ -53,5 +55,25 @@ public class TicketController {
         }
         Ticket paidTicket = ticketService.payTicket(id, payingAccountId);
         return ResponseEntity.ok(paidTicket);
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadTicket(@PathVariable String id) {
+        try {
+            byte[] pdfBytes = ticketService.downloadTicketPdf(id);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            // O cabeçalho 'Content-Disposition' sugere ao navegador para fazer o download do arquivo
+            headers.setContentDispositionFormData("attachment", "boleto-" + id + ".pdf");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+
+        } catch (Exception e) {
+            // A exceção já é tratada pelo GlobalExceptionHandler
+            throw e;
+        }
     }
 }
