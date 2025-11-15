@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS payment_bank;
 USE payment_bank;
 
+
 CREATE TABLE tb_user (
 	id VARCHAR(9) PRIMARY KEY,
     cpf VARCHAR(11) NOT NULL UNIQUE,

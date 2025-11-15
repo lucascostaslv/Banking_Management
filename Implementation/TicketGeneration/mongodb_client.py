@@ -16,10 +16,15 @@ DB_NAME = "banking_system"
 mongo_client = None
 db = None
 fs = None
+# Variavel de ambiente: set MONGO_CONNECTION_STRING="mongodb+srv://user-ticket:ticket-system010@clusterteste.spsdkiv.mongodb.net/?retryWrites=true&w=majority"
 
 try:
     if not MONGO_CONNECTION_STRING:
         raise ValueError("A variável de ambiente MONGO_CONNECTION_STRING não está definida.")
+
+    # Remove aspas que podem ser incluídas ao definir a variável de ambiente no Windows
+    if MONGO_CONNECTION_STRING.startswith('"') and MONGO_CONNECTION_STRING.endswith('"'):
+        MONGO_CONNECTION_STRING = MONGO_CONNECTION_STRING[1:-1]
 
     # Inicializa o cliente do MongoDB usando a Stable API
     mongo_client = MongoClient(MONGO_CONNECTION_STRING, server_api=ServerApi('1'))
