@@ -27,3 +27,7 @@ BEGIN
     END IF;
 END$
 DELIMITER ;
+
+-- Adicionando índice para melhorar performance
+CREATE INDEX idx_transaction_type ON tb_transaction(type);
+CREATE INDEX idx_transaction_status ON tb_transaction(status);

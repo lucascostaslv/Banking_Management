@@ -91,12 +91,12 @@ CREATE TABLE tb_transaction (
 	id VARCHAR(17) PRIMARY KEY,
     type VARCHAR(63) NOT NULL,
     status VARCHAR(20) DEFAULT 'PENDING',
-    payment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    payment_date TIMESTAMP NULL DEFAULT NULL,
     transaction_value DECIMAL(13,2) NOT NULL,
     
     -- LÓGICA CORRIGIDA:
     origin_account_id VARCHAR(12) NOT NULL, -- Quem recebe (no boleto) ou quem paga (no pix)
-    target_account_id VARCHAR(12),          -- Quem paga (no boleto) ou quem recebe (no pix)
+    target_account_id VARCHAR(12) NULL,          -- Quem paga (no boleto) ou quem recebe (no pix)
     
     CONSTRAINT FK_transaction_OGaccount 
     FOREIGN KEY (origin_account_id) REFERENCES tb_account (id)

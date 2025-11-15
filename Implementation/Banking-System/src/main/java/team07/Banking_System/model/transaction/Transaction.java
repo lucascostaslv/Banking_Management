@@ -1,13 +1,12 @@
 package team07.Banking_System.model.transaction;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import team07.Banking_System.model.account.Account;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Random;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "tb_transaction")
@@ -16,54 +15,94 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public abstract class Transaction {
 
     @Id
+    @Column(name = "id", length = 17)
     private String id;
 
+    @Column(name = "type", length = 63, nullable = false)
+    private String type;
+
+    @Column(name = "payment_date", nullable = true)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime paymentDate;
+
+    @Column(name = "transaction_value", precision = 13, scale = 2, nullable = false)
+    private BigDecimal transactionValue;
+
+    @Column(name = "status", length = 20, nullable = true)
+    private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_account_id")
+    @JoinColumn(name = "origin_account_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account originAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_account_id")
+    @JoinColumn(name = "target_account_id", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account targetAccount;
 
-    // CORREÇÃO: Mapeado para a coluna correta 'transaction_value'
-    @Column(name = "transaction_value")
-    private BigDecimal value;
-
-    // CORREÇÃO FINAL: Mapeado para a coluna correta 'payment_date'
-    @Column(name = "payment_date", columnDefinition = "TIMESTAMP(3)")
-    private LocalDateTime paymentDate;
-
-    private String type;
-
-    private String status;
-
+    // Construtores
     public Transaction() {
-        // A data é definida pela procedure ou no momento da criação
+        // payment_date começa NULL para boletos não pagos
+        this.status = "PENDING";
     }
 
-    public Transaction(Account originAccount, BigDecimal value, String type) {
+    public Transaction(Account originAccount, BigDecimal transactionValue, String type) {
         this.originAccount = originAccount;
-        this.value = value;
+        this.transactionValue = transactionValue;
         this.type = type;
-        this.status = "PENDING"; // Transações começam como pendentes
-        // A data do pagamento (paymentDate) será nula até a transação ser efetivada
+        this.status = "PENDING";
+        // payment_date fica NULL até ser pago
     }
 
-    public void generateAndSetId() {
-        Random rand = new Random();
-        int r_aux = rand.nextInt(1000000);
-        String r_num = String.format("%06d", r_aux);
-        this.id = "TR-" + r_num;
+    public Transaction(Account originAccount, Account targetAccount, BigDecimal transactionValue, String type) {
+        this.originAccount = originAccount;
+        this.targetAccount = targetAccount;
+        this.transactionValue = transactionValue;
+        this.type = type;
+        this.status = "PENDING";
+        this.paymentDate = LocalDateTime.now(); // PIX é pago na hora
     }
 
-    // Getters and Setters
+    // Getters e Setters
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public BigDecimal getTransactionValue() {
+        return transactionValue;
+    }
+
+    public void setTransactionValue(BigDecimal transactionValue) {
+        this.transactionValue = transactionValue;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Account getOriginAccount() {
@@ -82,35 +121,14 @@ public abstract class Transaction {
         this.targetAccount = targetAccount;
     }
 
-    public BigDecimal getValue() {
-        return value;
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value = value;
-    }
-
-    public LocalDateTime getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(LocalDateTime paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", transactionValue=" + transactionValue +
+                ", status='" + status + '\'' +
+                ", paymentDate=" + paymentDate +
+                '}';
     }
 }

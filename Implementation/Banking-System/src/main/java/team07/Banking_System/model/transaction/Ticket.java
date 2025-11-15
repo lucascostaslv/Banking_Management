@@ -1,37 +1,64 @@
 package team07.Banking_System.model.transaction;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
-import team07.Banking_System.model.account.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import team07.Banking_System.model.account.Account;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tb_ticket")
 @PrimaryKeyJoinColumn(name = "id")
-public class Ticket extends Transaction{
-    private String bars_code;
-    private LocalDate due_date;
-    
-    public Ticket(Account acc_trg, BigDecimal value, LocalDate due_date){
-        super(acc_trg, value, "ticket");
-        this.due_date = due_date;
+public class Ticket extends Transaction {
+
+    @Column(name = "bars_code", length = 255, nullable = false)
+    private String barsCode;
+
+    @Column(name = "due_date", nullable = false)
+    private LocalDate dueDate;
+
+    public Ticket() {
+        super();
+        super.setType("TICKET");
+        super.setStatus("PENDING");
     }
 
-    public Ticket(){}
-
-    public String getBars_code() {
-        return bars_code;
+    public Ticket(Account originAccount, BigDecimal transactionValue, String barsCode, LocalDate dueDate) {
+        super(originAccount, transactionValue, "TICKET");
+        this.barsCode = barsCode;
+        this.dueDate = dueDate;
+        super.setStatus("PENDING");
+        // payment_date fica NULL até o boleto ser pago
     }
 
-    public void setBars_code(String bars_code) {
-        this.bars_code = bars_code;
+    // Getters e Setters
+    public String getBarsCode() {
+        return barsCode;
     }
 
-    public LocalDate getDue_date() {
-        return due_date;
+    public void setBarsCode(String barsCode) {
+        this.barsCode = barsCode;
     }
 
-    public void setDue_date(LocalDate due_date) {
-        this.due_date = due_date;
-    };
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id='" + getId() + '\'' +
+                ", barsCode='" + barsCode + '\'' +
+                ", dueDate=" + dueDate +
+                ", value=" + getTransactionValue() +
+                ", status='" + getStatus() + '\'' +
+                '}';
+    }
 }

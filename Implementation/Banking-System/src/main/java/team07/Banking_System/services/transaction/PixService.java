@@ -48,14 +48,16 @@ public class PixService {
 
         // 3. Criar a entidade PIX inicial
         Pix pix = new Pix(originAccount, pixDTO.getValue(), pixDTO.getPixKey());
-        pix.generateAndSetId(); // Gera o ID da transação
+        // Gerar ID manualmente
+        String ticketId = "PX-" + System.currentTimeMillis();
+        pix.setId(ticketId); // Gera o ID da transação
 
         // 4. Chamar a procedure
-        logger.info("Chamando procedure pix_payment...");
+        logger.info("Chamando procedure executePixPayment...");
         String status = transactionRepository.executePixPayment(
                 pix.getOriginAccount().getId(),
-                pix.getPixKey(),
-                pix.getValue(),
+                pix.getKeyTrg(), // MUDOU: agora usa getKeyTrg() ao invés de getPixKey()
+                pix.getTransactionValue(), // MUDOU: agora usa getTransactionValue() ao invés de getValue()
                 pix.getId()
         );
         logger.info("Procedure executada. Status: " + status);
@@ -65,13 +67,14 @@ public class PixService {
             case "SUCCESS" -> (Pix) transactionRepository.findById(pix.getId())
                     .orElseThrow(() -> new IllegalStateException("PIX realizado, mas não encontrado para retorno."));
             case "INSUFFICIENT_FUNDS" -> throw new IllegalArgumentException("Saldo insuficiente na conta de origem.");
-            case "TARGET_ACCOUNT_NOT_FOUND" -> throw new NoSuchElementException("Chave PIX de destino não encontrada.");
+            case "PIX_KEY_NOT_FOUND" -> throw new NoSuchElementException("Chave PIX de destino não encontrada.");
             default -> throw new IllegalStateException("Erro desconhecido na transação PIX: " + status);
         };
     }
 
     public Optional<Pix> findPixById(String id) {
         return transactionRepository.findById(id)
-                .filter(transaction -> transaction instanceof Pix).map(transaction -> (Pix) transaction);
+                .filter(transaction -> transaction instanceof Pix)
+                .map(transaction -> (Pix) transaction);
     }
 }
