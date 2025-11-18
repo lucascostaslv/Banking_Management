@@ -93,13 +93,18 @@ function renderTickets(filteredTickets = null) {
 
     ticketsToRender.forEach(ticket => {
         const tr = document.createElement('tr');
-        const isPaid = ticket.status === 'PAID' || ticket.paid;
+        
+        // Os dados estão diretamente no ticket, não em transaction
+        const isPaid = ticket.status === 'PAID';
+        const value = ticket.transactionValue;
+        const originAccountId = ticket.originAccount?.id || '-';
+
         tr.innerHTML = `
             <td>${ticket.id || '-'}</td>
-            <td>${ticket.originAccount?.id || '-'}</td>
-            <td>R$ ${formatCurrency(ticket.value)}</td>
+            <td>${originAccountId}</td>
+            <td>R$ ${formatCurrency(value)}</td>
             <td>${formatDate(ticket.dueDate)}</td>
-            <td><span class="badge badge-${isPaid ? 'success' : 'warning'}">${isPaid ? 'Pago' : 'Pendente'}</span></td>
+            <td><span class="badge badge-${isPaid ? 'success' : 'warning'}">${ticket.status || 'PENDENTE'}</span></td>
             <td>
                 ${!isPaid ? `
                     <button class="btn btn-success" onclick="payTicket('${ticket.id}')" style="padding: 6px 12px; font-size: 12px; margin-right: 4px;">Pagar</button>
@@ -140,11 +145,11 @@ async function handleSubmit(e) {
     }
     
     const ticketData = {
-        originAccount: {
-            id: originAccountId
+        transaction: {
+            transaction_value: value,
+            origin_account_id: originAccountId
         },
-        value: value,
-        dueDate: dueDate
+        due_date: dueDate
     };
 
     try {
@@ -204,13 +209,14 @@ function showMessage(message, type) {
 }
 
 function formatCurrency(value) {
-    if (!value) return '0,00';
-    return parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const number = parseFloat(value);
+    return isNaN(number) ? '0,00' : number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
+    // Adiciona o offset do fuso horário para corrigir a data
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
 }
-

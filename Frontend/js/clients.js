@@ -128,6 +128,7 @@ function showMessage(message, type) {
 function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
+    // Adiciona o offset do fuso horário para corrigir a data
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
 }
-
